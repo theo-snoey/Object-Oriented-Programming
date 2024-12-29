@@ -1,0 +1,112 @@
+// Author: Theo Snoey
+Short Answers to Pset Questions...
+
+Warmup
+-------
+Q1. How do the values of the member variables of `allBalls[0]` change from iteration to iteration? Specifically, what happens to the values of `_id`, `_x`, and `_y`?
+A1. The id stays the same, and the value of x and y change by how much the velocity is set for by each ball. The vx and xy will change signs as the balls contact the edges of the window
+
+Q2. How do the values of the member variables of the stuck ball change from iteration to iteration? Contrast this to your answer to the previous question.
+A2. the id in question is not changing, but the y position is non changing while the x position in changing. this is becasue vy is 0 while vx oscillates between negative and positive signs
+
+Q3. After forcing the stuck ball to position (0, 0), does the ball move normally from there or does it stay stuck?
+A3. It moves relatively normally, it isn't stuck, but its velocity in the y direction is still 0 so it is only currently moving horizontally.
+
+Q4. On your system, what is the observed consequence of these memory errors:
+- access an index outside the allocated array bounds?
+- delete same memory twice?
+- access memory after it has been deleted?
+A4.
+There was no obvious consequence to accessing an index outside of the allocated array bounds.
+For delete same memory twice, an abort error was raised during program execution
+For access memory after it has been deleted, we simply get an error raised in our warmup.cpp test cases, because our expect equal failed.
+
+PQArray
+-------
+Q5. There are extensive comments in both the interface (`pqarray.h`) and implementation (`pqarray.cpp`). Explain how and why the comments in the interface differ from those in the implementation. Consider both the content and audience for the documentation.
+A5. The contents in the pqarray.h file are less in depth and simply large scale descriptions of the differnt components of the class, in the implementation in pdarray.cpp, the comments are more descriptive,
+giving us insight into how the methods accomplish what they do. The comments in the interface serves simply to give the audience a sense of the components of the class while the implementation comments give the audience a sense of the "inner workings" of the class.
+
+Q6. Although code within the body of a member function can directly access the object's member variables, the implementer may instead choose to call public member functions to get information about the object. For example, note how the operations `isEmpty()` and `peek()` intentionally call `size()` instead of using `_numFilled` or how `dequeue()` calls `peek()` to retrieve the frontmost element. Why might be this be considered a better design?
+A6. This could be better design because when debugging/ dealing with issues in these functoins, you want to be able to change values, on the fly. If these values are private instead of public, this may prove to be hard. Additionally, more reliance on other functions might debug your code further, if you're dealing with differnt test cases that call size and peek, you might find errors there that you didn't know existed because your standard test
+cases never caught them.
+
+Q7. Internal and client-side testing strategies serve different purposes. Give an example of a test case/scenario suited to an internal approach that would be difficult to test using a client-side approach. Conversely, what is a scenario that seems better tested client-side?
+Q7. Internal test is useful in the case where youre trying to debug a problem in a private function dealing with the specifics of the internal state of the array. Because this information is private/ not provided by our methods we need to access it internally. On the client side a test is better suited
+for checking if our methods work wholistically, does peek return the right value? etc...
+
+Q8. Give the results from your time trials and explain how they support your prediction for the Big-O runtimes of `enqueue` and `dequeue`.
+A8. I predicted both enqueue and dequeue to have time trials of O(1).
+
+PQ Client
+---------
+Q9. Based on the Big O of `enqueue`/`dequeue`, what do you expect for the Big O of `pqSort` if using a `PQArray`? Run some timing trials to confirm your prediction, and include that data in your answer.
+A9. I expect the big O of pqSort to be O(N^2).
+Line 101 TIME_OPERATION pqSort(v) (size = 1000) completed in 0.003 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 2000) completed in 0.017 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 4000) completed in 0.057 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 8000) completed in 0.225 secs
+
+Q10. Based on the Big O of `enqueue`/`dequeue`, what do you expect for the Big O of `topK` in terms of `k` and `n` if using a `PQArray`? Run some timing trials to confirm your prediction, and include that data in your answer.
+A10. I expect the big O of topK to be O(Nk).
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 200000) completed in 0.140 secs
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 400000) completed in 0.280 secs
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 800000) completed in 0.563 secs
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 1600000) completed in 1.128 secs
+
+PQHeap
+------
+Q11. Start with an empty binary heap and enqueue the nine `DataPoint`s in the order shown below and show the result. You only need to show the final heap, not intermediate steps. Draw the heap as tree-like diagram with root element on top, its two children below, and so on. Yes, we know that we're asking you to draw pictures in a text file (we love the [AsciiFlow](http://asciiflow.com/) tool for "drawing" in text).
+A11.                       1
+                      3         2
+                   6     5    9    4
+                8    7
+
+Q12. Make two calls to `dequeue` on the above binary heap and draw the updated result.
+A12.                       2
+                      3         4
+                   6     5    9    7
+                8
+
+Q13. Draw the array representation of the binary heap above. Label each element with its array index.
+A13.     _________________________
+     idx |0 | 1| 2| 3| 4| 5| 6| 7|
+         |-----------------------|
+    elmt |2 | 3| 4| 6| 5| 9| 7| 8|
+
+
+Q14. Re-run the timing trials on `pqclient.cpp` and provide your results that confirm that `pqSort` runs in time O(NlogN) and `topK` in O(NlogK).
+A14. Run time is much faster. New run time is O(NlogN) and O(NlogK).
+
+Line 101 TIME_OPERATION pqSort(v) (size = 1000) completed in 0.001 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 2000) completed in 0.001 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 4000) completed in 0.002 secs
+Line 101 TIME_OPERATION pqSort(v) (size = 8000) completed in 0.005 secs
+
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 200000) completed in 0.177
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 400000) completed in 0.353
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 800000) completed in 0.707
+Line 112 TIME_OPERATION result = topK(stream, k) (size = 1600000) completed in 1.419
+
+
+Embedded Ethics
+---------------
+Q15. Consider the differences between this three-bin priority queue and the priority queue you implemented on your assignment. Which would be more efficient to insert elements into and why? More generally, what are the benefits and disadvantages of using the three-bin priority queue vs. a regular priority queue?
+A15. It is more efficient to insert elements into the 3 bin queue becasue we don't need to find the correct order within that queue once you find it because you just respect FIFO. the 3
+bin queue is simple and efficient, however, you are dealing with 3 differnt data structures, and when dequeueing you potentially need to check all 3 queues.
+
+Q16. Describe a real-world system where a three-bin priority queue could be used. What factors would you use to distinguish between a low vs. medium vs. high priority element? What limitations might you need to consider when using a three-bin priority queue to represent this system?
+A16. A 3 bin priority queue could be used for printing in the library. High priority could be given to people printing less than a few sheets, medium priotity could be given to people printing 5-20 sheets and low priority could be given to people printing more than that.
+
+Q17. Different institutions consider different factors in admissions and convert criteria to numbers different ways.  Regardless of which specific factors are considered, should an admissions department use a purely numerical rankings based system? Why or why not?
+    I don't think admissions should use a purely numerical ranking system. So many parts of an application are intangible and subjective, and if you reduce certain criteria to a cutoff or a single metric you miss out on a lot of the nuance that you might get to in an interview or an essay.
+
+If yes, discuss what factors you think would be best to include when calculating numerical rankings and why those factors are well-represented as numbers. If not, discuss what factors you think should be considered in college admissions that would be difficult to represent as a numerical score. There are no right or wrong answers here - we're genuinely interested in your thoughts!
+A17. some factors could be your indivual perspective on random things, you ability to speak/connect with people, your ability to think creatively.
+How do you quantify these things? You can't. There are millions of different ways to express onself that can't be capture or reduced to a number that might impact how admissions sees you as a person.
+
+Q18. Describe a real-world system that requires ranking but in which classification with a single number misses important context (i.e. a priority queue might not be the best way to store the objects being ranked). Make sure to use an example that hasn't already been discussed in lecture or in this assignment.
+A18. Rotten tonmatoes movie rankings rank films based on varied criteria. However, taste is subjective, and one critics numerical ranking for a category might differ a lot from another critic's or your own.
+
+Q19. How would you design an implementation for the hospital's priority queue that dynamically determines which patient is the best match whenever a new organ becomes available? __Note:__ Your design does not have to be the fastest or most efficient.
+A19. I would create a queue system that regularly updates itself, my dequeueing all the objects and updating their total score (an aggregate of many factors, proximity to a hospital, probability of compatibility, etc...), then I would enqueue those objects again with their new updated scores, repeating this process continually so that people can asses priorities at specific time frames.
